@@ -21,11 +21,13 @@ namespace ResturangDB_API.Services
         {
             var newBooking = new Booking
             {
-                FK_CustomerID = booking.CustomerID,
                 FK_TableID = booking.TableID,
                 AmountOfPeople = booking.AmountOfPeople,
                 Time = booking.Time,
-                TimeEnd = booking.TimeEnd
+                TimeEnd = booking.TimeEnd,
+                Name = booking.Name,
+                Email = booking.Email,
+                PhoneNumber = booking.PhoneNumber
             };
 
             await _bookingRepo.AddBookingAsync(newBooking);
@@ -38,11 +40,13 @@ namespace ResturangDB_API.Services
             var bookingList = bookings.Select(booking => new BookingGetDTO
             {
                 BookingID = booking.BookingID,
-                CustomerID = booking.FK_CustomerID,
                 TableID = booking.FK_TableID,
                 AmountOfPeople = booking.AmountOfPeople,
                 Time = booking.Time,
-                TimeEnd = booking.TimeEnd
+                TimeEnd = booking.TimeEnd,
+                Name = booking.Name,
+                Email = booking.Email,
+                PhoneNumber = booking.PhoneNumber
             }).ToList();
 
             return bookingList;
@@ -57,11 +61,13 @@ namespace ResturangDB_API.Services
                 var booking = new BookingGetDTO
                 {
                     BookingID = bookingFound.BookingID,
-                    CustomerID = bookingFound.FK_CustomerID,
                     TableID = bookingFound.FK_TableID,
                     AmountOfPeople = bookingFound.AmountOfPeople,
                     Time = bookingFound.Time,
-                    TimeEnd = bookingFound.TimeEnd
+                    TimeEnd = bookingFound.TimeEnd,
+                    Name = bookingFound.Name,
+                    Email = bookingFound.Email,
+                    PhoneNumber = bookingFound.PhoneNumber
                 };
 
                 return booking;
@@ -76,11 +82,13 @@ namespace ResturangDB_API.Services
 
             if (bookingFound != null)
             {
-                bookingFound.FK_CustomerID = booking.CustomerID;
                 bookingFound.FK_TableID = booking.TableID;
                 bookingFound.Time = booking.Time;
                 bookingFound.TimeEnd = booking.TimeEnd;
                 bookingFound.AmountOfPeople = booking.AmountOfPeople;
+                bookingFound.Name = booking.Name;
+                bookingFound.Email = booking.Email;
+                bookingFound.PhoneNumber = booking.PhoneNumber;
                 await _bookingRepo.UpdateBookingAsync(bookingFound);
 
                 return true;

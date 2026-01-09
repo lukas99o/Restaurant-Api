@@ -8,10 +8,6 @@ namespace ResturangDB_API.Models
         [Key]
         public int BookingID { get; set; }
 
-        [ForeignKey("Customer")]
-        public int FK_CustomerID { get; set; }
-        public Customer Customer { get; set; }
-
         [ForeignKey("Table")]
         public int FK_TableID { get; set; }
         public Table Table { get; set; }
@@ -24,5 +20,11 @@ namespace ResturangDB_API.Models
 
         [Required]
         public DateTime TimeEnd { get; set; }
+
+        public required string Name { get; set; }
+
+        public required string Email { get; set; }
+
+        public required string PhoneNumber { get; set; }
     }
 }
