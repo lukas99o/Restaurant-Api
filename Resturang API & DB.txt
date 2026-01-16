@@ -1,6 +1,0 @@
-Buggar i min kod:
-Kan inte koppla ihop MenuItem med Menu
-
-Funtion som behövs
-Måste lägga in ifall man lägger fler customers än stolar som finns i tablet så ska det inte gå att boka
-även om ett bord skulle vara bokat till en viss tid så ska det ändå gå att boka det bordet en senare tid
