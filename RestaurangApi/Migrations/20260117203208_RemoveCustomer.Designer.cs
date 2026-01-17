@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ResturangDB_API.Data;
 
@@ -11,9 +12,11 @@ using ResturangDB_API.Data;
 namespace ResturangDB_API.Migrations
 {
     [DbContext(typeof(ResturangContext))]
-    partial class ResturangContextModelSnapshot : ModelSnapshot
+    [Migration("20260117203208_RemoveCustomer")]
+    partial class RemoveCustomer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
