@@ -10,7 +10,7 @@ namespace ResturangDB_API.Models
 
         [ForeignKey("Table")]
         public int FK_TableID { get; set; }
-        public Table Table { get; set; }
+        public Table? Table { get; set; }
 
         [Required]
         public int AmountOfPeople { get; set; }

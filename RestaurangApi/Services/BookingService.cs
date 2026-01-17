@@ -11,14 +11,80 @@ namespace ResturangDB_API.Services
         private readonly IBookingRepo _bookingRepo;
         private readonly ITableRepo _tableRepo;
 
+        private static DateTime GetNextWholeHourUtc(DateTime utcNow)
+        {
+            var truncated = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, 0, 0, DateTimeKind.Utc);
+            return truncated.AddHours(1);
+        }
+
         public BookingService(IBookingRepo bookingRepo, ITableRepo tableRepo)
         {
             _bookingRepo = bookingRepo;
             _tableRepo = tableRepo;
         }
 
+        private static bool Overlaps(DateTime startA, DateTime endA, DateTime startB, DateTime endB)
+            => startA < endB && endA > startB;
+
+        private static void ValidateTimeWindow(DateTime start, DateTime end)
+        {
+            if (end <= start)
+            {
+                throw new ArgumentException("End time must be after start time.");
+            }
+
+            var nowUtc = DateTime.UtcNow;
+            var earliestUtc = GetNextWholeHourUtc(nowUtc);
+            var latestUtc = nowUtc.AddMonths(1);
+
+            var startUtc = start.ToUniversalTime();
+
+            if (startUtc < earliestUtc)
+            {
+                throw new ArgumentException("Booking start time must be at or after the next whole hour from now.");
+            }
+
+            if (startUtc > latestUtc)
+            {
+                throw new ArgumentException("Booking start time must be within 1 month from now.");
+            }
+        }
+
         public async Task AddBookingAsync(BookingCreateDTO booking)
         {
+            ValidateTimeWindow(booking.Time, booking.TimeEnd);
+
+            var table = await _tableRepo.GetTableByIDAsync(booking.TableID);
+            if (table == null)
+            {
+                throw new InvalidOperationException("The specified table does not exist.");
+            }
+
+            if (!table.IsAvailable)
+            {
+                throw new InvalidOperationException("The specified table is not available.");
+            }
+
+            if (booking.AmountOfPeople <= 0)
+            {
+                throw new ArgumentException("AmountOfPeople must be greater than 0.");
+            }
+
+            if (table.TableSeats < booking.AmountOfPeople)
+            {
+                throw new InvalidOperationException("Too many people for the selected table.");
+            }
+
+            var existingBookings = await _bookingRepo.GetAllBookingsAsync();
+            var overlapExists = existingBookings.Any(b =>
+                b.FK_TableID == booking.TableID &&
+                Overlaps(booking.Time, booking.TimeEnd, b.Time, b.TimeEnd));
+
+            if (overlapExists)
+            {
+                throw new InvalidOperationException("This table is already booked for the selected time window.");
+            }
+
             var newBooking = new Booking
             {
                 FK_TableID = booking.TableID,
@@ -82,6 +148,40 @@ namespace ResturangDB_API.Services
 
             if (bookingFound != null)
             {
+                ValidateTimeWindow(booking.Time, booking.TimeEnd);
+
+                var table = await _tableRepo.GetTableByIDAsync(booking.TableID);
+                if (table == null)
+                {
+                    throw new InvalidOperationException("The specified table does not exist.");
+                }
+
+                if (!table.IsAvailable)
+                {
+                    throw new InvalidOperationException("The specified table is not available.");
+                }
+
+                if (booking.AmountOfPeople <= 0)
+                {
+                    throw new ArgumentException("AmountOfPeople must be greater than 0.");
+                }
+
+                if (table.TableSeats < booking.AmountOfPeople)
+                {
+                    throw new InvalidOperationException("Too many people for the selected table.");
+                }
+
+                var existingBookings = await _bookingRepo.GetAllBookingsAsync();
+                var overlapExists = existingBookings.Any(b =>
+                    b.BookingID != booking.BookingID &&
+                    b.FK_TableID == booking.TableID &&
+                    Overlaps(booking.Time, booking.TimeEnd, b.Time, b.TimeEnd));
+
+                if (overlapExists)
+                {
+                    throw new InvalidOperationException("This table is already booked for the selected time window.");
+                }
+
                 bookingFound.FK_TableID = booking.TableID;
                 bookingFound.Time = booking.Time;
                 bookingFound.TimeEnd = booking.TimeEnd;

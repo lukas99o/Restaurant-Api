@@ -11,6 +11,12 @@ namespace ResturangDB_API.Services
         private readonly ITableRepo _tableRepo;
         private readonly IBookingRepo _bookingRepo;
 
+        private static DateTime GetNextWholeHourUtc(DateTime utcNow)
+        {
+            var truncated = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, 0, 0, DateTimeKind.Utc);
+            return truncated.AddHours(1);
+        }
+
         public TableService(ITableRepo tableRepo, IBookingRepo bookingRepo)
         {
             _tableRepo = tableRepo;
@@ -95,30 +101,34 @@ namespace ResturangDB_API.Services
             var tables = await _tableRepo.GetAllTablesAsync();
             var bookings = await _bookingRepo.GetAllBookingsAsync();
 
-            foreach (var booking in bookings)
+            var nowUtc = DateTime.UtcNow;
+            var earliestUtc = GetNextWholeHourUtc(nowUtc);
+            var latestUtc = nowUtc.AddMonths(1);
+
+            if (timeEnd <= time)
             {
-                if (time <= booking.Time && timeEnd <= booking.TimeEnd)
-                {
-                    booking.Table.IsAvailable = false;
-                }
-
-                if (time >= booking.Time && timeEnd <= booking.TimeEnd)
-                {
-                    booking.Table.IsAvailable = false;
-                }
-
-                if (time >= booking.Time && time <= booking.TimeEnd && timeEnd >= booking.TimeEnd)
-                {
-                    booking.Table.IsAvailable = false;
-                }
-
-                if (time <= booking.Time && timeEnd >= booking.TimeEnd)
-                {
-                    booking.Table.IsAvailable = false;
-                }
+                return Enumerable.Empty<TableGetDTO>();
             }
 
-            tables = tables.Where(t => t.IsAvailable);
+            // Booking window rules:
+            // - start must be >= next whole hour from now (UTC)
+            // - start must be within 1 month from now
+            if (time.ToUniversalTime() < earliestUtc)
+            {
+                return Enumerable.Empty<TableGetDTO>();
+            }
+
+            if (time.ToUniversalTime() > latestUtc)
+            {
+                return Enumerable.Empty<TableGetDTO>();
+            }
+
+            var bookedTableIds = bookings
+                .Where(b => time < b.TimeEnd && timeEnd > b.Time)
+                .Select(b => b.FK_TableID)
+                .ToHashSet();
+
+            tables = tables.Where(t => t.IsAvailable && !bookedTableIds.Contains(t.TableID));
 
             var tableList = tables.Select(table => new TableGetDTO
             {
@@ -128,10 +138,6 @@ namespace ResturangDB_API.Services
             }).ToList();
 
             return tableList;
-
-            // booked tables is equal too the booking time and timeEnd if a tableID is within the time window
-            // it shall be temporarly unavailable so that the Get endpoint can return a list with tables that are
-            // available within i certain time.
         }
     }
 }
