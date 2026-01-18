@@ -85,6 +85,15 @@ namespace ResturangDB_API.Data
                 new MenuItem { MenuItemID = 29, Name = "Mineral Water", Price = 20, IsAvailable = true, FK_MenuID = 2, Description = "Refreshing and clean mineral water." },
                 new MenuItem { MenuItemID = 30, Name = "Sparkling Water", Price = 25, IsAvailable = true, FK_MenuID = 2, Description = "Bubbly, refreshing sparkling water." }
                 );
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    UserID = 1,
+                    Username = "admin",
+                    PasswordHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+                }
+            );
         }
     }
 }
