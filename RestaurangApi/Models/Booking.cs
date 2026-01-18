@@ -13,9 +13,6 @@ namespace ResturangDB_API.Models
         public Table? Table { get; set; }
 
         [Required]
-        public int AmountOfPeople { get; set; }
-
-        [Required]
         public DateTime Time { get; set; }
 
         [Required]
