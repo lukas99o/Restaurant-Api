@@ -65,16 +65,6 @@ namespace ResturangDB_API.Services
                 throw new InvalidOperationException("The specified table is not available.");
             }
 
-            if (booking.AmountOfPeople <= 0)
-            {
-                throw new ArgumentException("AmountOfPeople must be greater than 0.");
-            }
-
-            if (table.TableSeats < booking.AmountOfPeople)
-            {
-                throw new InvalidOperationException("Too many people for the selected table.");
-            }
-
             var existingBookings = await _bookingRepo.GetAllBookingsAsync();
             var overlapExists = existingBookings.Any(b =>
                 b.FK_TableID == booking.TableID &&
@@ -156,16 +146,6 @@ namespace ResturangDB_API.Services
                 if (!table.IsAvailable)
                 {
                     throw new InvalidOperationException("The specified table is not available.");
-                }
-
-                if (booking.AmountOfPeople <= 0)
-                {
-                    throw new ArgumentException("AmountOfPeople must be greater than 0.");
-                }
-
-                if (table.TableSeats < booking.AmountOfPeople)
-                {
-                    throw new InvalidOperationException("Too many people for the selected table.");
                 }
 
                 var existingBookings = await _bookingRepo.GetAllBookingsAsync();
