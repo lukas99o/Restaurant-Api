@@ -88,7 +88,6 @@ namespace ResturangDB_API.Services
             var newBooking = new Booking
             {
                 FK_TableID = booking.TableID,
-                AmountOfPeople = booking.AmountOfPeople,
                 Time = booking.Time,
                 TimeEnd = booking.TimeEnd,
                 Name = booking.Name,
@@ -107,7 +106,6 @@ namespace ResturangDB_API.Services
             {
                 BookingID = booking.BookingID,
                 TableID = booking.FK_TableID,
-                AmountOfPeople = booking.AmountOfPeople,
                 Time = booking.Time,
                 TimeEnd = booking.TimeEnd,
                 Name = booking.Name,
@@ -128,7 +126,6 @@ namespace ResturangDB_API.Services
                 {
                     BookingID = bookingFound.BookingID,
                     TableID = bookingFound.FK_TableID,
-                    AmountOfPeople = bookingFound.AmountOfPeople,
                     Time = bookingFound.Time,
                     TimeEnd = bookingFound.TimeEnd,
                     Name = bookingFound.Name,
@@ -185,7 +182,6 @@ namespace ResturangDB_API.Services
                 bookingFound.FK_TableID = booking.TableID;
                 bookingFound.Time = booking.Time;
                 bookingFound.TimeEnd = booking.TimeEnd;
-                bookingFound.AmountOfPeople = booking.AmountOfPeople;
                 bookingFound.Name = booking.Name;
                 bookingFound.Email = booking.Email;
                 bookingFound.PhoneNumber = booking.PhoneNumber;

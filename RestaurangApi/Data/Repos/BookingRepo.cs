@@ -22,10 +22,6 @@ namespace ResturangDB_API.Data.Repos
             {
                 throw new Exception($"This table doe's not exist");
             }
-            else if (tableToBeBooked.TableSeats < booking.AmountOfPeople)
-            {
-                throw new Exception("Your company is to large for this table you need a table with more seats.");
-            }
             else if (!tableToBeBooked.IsAvailable)
             {
                 throw new Exception("Try another table this one is booked!");
@@ -60,10 +56,6 @@ namespace ResturangDB_API.Data.Repos
             if (bookedTable == null)
             {
                 throw new Exception($"This table doe's not exist");
-            }
-            else if (bookedTable.TableSeats < booking.AmountOfPeople)
-            {
-                throw new Exception("Your company is to large for this table you need a table with more seats.");
             }
             else if (booking.Time < DateTime.Now || booking.TimeEnd <= booking.Time || booking.TimeEnd <= DateTime.Now.AddMinutes(30))
             {

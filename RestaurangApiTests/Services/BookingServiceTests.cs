@@ -35,7 +35,6 @@ public class BookingServiceTests
 
         _bookingRepoMock.Setup(r => r.AddBookingAsync(It.Is<Booking>(b =>
             b.FK_TableID == dto.TableID &&
-            b.AmountOfPeople == dto.AmountOfPeople &&
             b.Time == dto.Time &&
             b.TimeEnd == dto.TimeEnd &&
             b.Name == dto.Name &&
