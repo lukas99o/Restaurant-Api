@@ -22,19 +22,9 @@ namespace ResturangDB_API.Data.Repos
             {
                 throw new Exception($"This table doe's not exist");
             }
-            else if (!tableToBeBooked.IsAvailable)
-            {
-                throw new Exception("Try another table this one is booked!");
-            }
-            else if (booking.Time < DateTime.Now || booking.TimeEnd <= booking.Time || booking.TimeEnd <= DateTime.Now.AddMinutes(30))
-            {
-                throw new Exception("Please input a valid booking time.");
-            }
-            else
-            {
-                await _context.Bookings.AddAsync(booking);
-                await _context.SaveChangesAsync();
-            }
+
+            await _context.Bookings.AddAsync(booking);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Booking>> GetAllBookingsAsync()

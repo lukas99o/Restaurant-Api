@@ -82,7 +82,7 @@ namespace ResturangDB_API.Services
                 TimeEnd = booking.TimeEnd,
                 Name = booking.Name,
                 Email = booking.Email,
-                PhoneNumber = booking.PhoneNumber
+                PhoneNumber = booking.Phone
             };
 
             await _bookingRepo.AddBookingAsync(newBooking);
@@ -100,7 +100,7 @@ namespace ResturangDB_API.Services
                 TimeEnd = booking.TimeEnd,
                 Name = booking.Name,
                 Email = booking.Email,
-                PhoneNumber = booking.PhoneNumber
+                Phone = booking.PhoneNumber
             }).ToList();
 
             return bookingList;
@@ -120,7 +120,7 @@ namespace ResturangDB_API.Services
                     TimeEnd = bookingFound.TimeEnd,
                     Name = bookingFound.Name,
                     Email = bookingFound.Email,
-                    PhoneNumber = bookingFound.PhoneNumber
+                    Phone = bookingFound.PhoneNumber
                 };
 
                 return booking;
@@ -164,7 +164,7 @@ namespace ResturangDB_API.Services
                 bookingFound.TimeEnd = booking.TimeEnd;
                 bookingFound.Name = booking.Name;
                 bookingFound.Email = booking.Email;
-                bookingFound.PhoneNumber = booking.PhoneNumber;
+                bookingFound.PhoneNumber = booking.Phone;
                 await _bookingRepo.UpdateBookingAsync(bookingFound);
 
                 return true;
