@@ -65,6 +65,7 @@ namespace ResturangDB_API.Controllers
             }   
 
             user.PasswordHash = HashPassword(newPassword ?? string.Empty);
+            user.ChangedPassword = true;
             _context.SaveChanges();
 
             return Ok("Password changed successfully.");
@@ -98,7 +99,8 @@ namespace ResturangDB_API.Controllers
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("ChangedPassword", user.ChangedPassword.ToString().ToLower())
             };
 
             var token = new JwtSecurityToken(
